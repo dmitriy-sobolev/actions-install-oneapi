@@ -19,13 +19,13 @@ jobs:
         shell: cmd
         run: |
           curl %WINDOWS_TBB_DOWNLOAD_LINK% --output tbb_install.exe
-          tbb_install.exe -s -a --silent --eula accept
+          tbb_install.exe -s -a --silent --eula accept -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0
           del tbb_install.exe
       - name: Install Intel® oneAPI DPC++/C++ Compiler
         shell: cmd
         run: |
           curl %WINDOWS_ICPX_DOWNLOAD_LINK% --output icpx_install.exe
-          icpx_install.exe -s -a --silent --eula accept
+          icpx_install.exe -s -a --silent --eula accept -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0
           del icpx_install.exe
       - name: Basic Test
         shell: cmd
