@@ -8,10 +8,13 @@ env:
   WINDOWS_TBB_DOWNLOAD_LINK: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/64957c0f-37bf-4408-909c-37ff52fe5119/w_tbb_oneapi_p_2021.11.0.49526.exe
   WINDOWS_ICPX_DOWNLOAD_LINK: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/dc441d10-698c-417d-be6f-44a172f7ab77/w_dpcpp-cpp-compiler_p_2024.0.1.28_offline.exe
   WINDOWS_ONEAPI_PATH: C:\Program Files (x86)\Intel\oneAPI
- 
+  LINUX_TBB_DOWNLOAD_LINK: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/af3ad519-4c87-4534-87cb-5c7bda12754e/l_tbb_oneapi_p_2021.11.0.49527_offline.sh
+  LINUX_ICPX_DOWNLOAD_LINK: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c68c8f0a-47f5-4f26-8e8e-fa2627271279/l_dpcpp-cpp-compiler_p_2024.0.1.29_offline.sh
+  LINUX_ONEAPI_PATH: /opt/intel/oneapi
+
 jobs:
   windows:
-    name: Test components installation
+    name: Test components installation (Windows)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,6 +34,30 @@ jobs:
       - name: Basic Test
         shell: cmd
         run: |
-          "%WINDOWS_ONEAPI_PATH%\setvars.bat"
+          call "%WINDOWS_ONEAPI_PATH%\setvars.bat"
           sycl-ls
           wmic cpu get caption, deviceid, name, numberofcores
+
+  linux:
+    name: Test components installation (Linux)
+    runs-on: linux-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Intel® oneAPI Threading Building Blocks (oneTBB)
+        shell: bash
+        run: |
+          curl ${LINUX_TBB_DOWNLOAD_LINK} --output tbb_install.sh
+          sudo sh tbb_install.sh -s -a --silent --eula accept
+          rm -f tbb_install.sh
+      - name: Install Intel® oneAPI DPC++/C++ Compiler
+        shell: bash
+        run: |
+          curl ${LINUX_ICPX_DOWNLOAD_LINK} --output icpx_install.sh
+          sudo sh icpx_install.sh -s -a --silent --eula accept
+          rm -f icpx_install.exe
+          rm -rf ${LINUX_ONEAPI_PATH}/dpl
+      - name: Basic Test
+        shell: bash
+        run: |
+          source LINUX_ONEAPI_PATH/setvars.sh
+          sycl-ls
