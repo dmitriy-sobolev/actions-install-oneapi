@@ -27,8 +27,10 @@ jobs:
           curl %WINDOWS_ICPX_DOWNLOAD_LINK% --output icpx_install.exe
           icpx_install.exe -s -a --silent --eula accept -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0
           del icpx_install.exe
+          rmdir "%WINDOWS_ONEAPI_PATH%\dpl"
       - name: Basic Test
         shell: cmd
         run: |
           "%WINDOWS_ONEAPI_PATH%\setvars.bat"
           sycl-ls
+          wmic cpu get caption, deviceid, name, numberofcores
