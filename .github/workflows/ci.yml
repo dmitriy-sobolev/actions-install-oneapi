@@ -55,7 +55,7 @@ jobs:
           curl ${LINUX_ICPX_DOWNLOAD_LINK} --output icpx_install.sh
           sudo sh icpx_install.sh -s -a --silent --eula accept
           rm -f icpx_install.exe
-          rm -rf ${LINUX_ONEAPI_PATH}/dpl
+          sudo rm -rf ${LINUX_ONEAPI_PATH}/dpl
       - name: Basic Test
         shell: bash
         run: |
